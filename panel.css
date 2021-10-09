@@ -146,13 +146,19 @@
   overflow: auto;
 }
 
-
 .about {
   display: flex;
-    flex-direction: column;
-    float: right;
+  flex-direction: column;
+  float: right;
 }
 
 body {
   overflow: hidden;
+}
+.copy {
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+  margin: 10px;
+  display: none;
 }

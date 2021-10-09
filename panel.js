@@ -3,10 +3,11 @@
 // Can use
 // chrome.devtools.*
 // chrome.extension.*
-var cnt=0;
+var cnt = 0;
 let arr = new Array();
-var filterText = '';
-
+var filterText = "";
+var copyId;
+var whatToCopy = "Response";
 var open = window.XMLHttpRequest.prototype.open,
   send = window.XMLHttpRequest.prototype.send;
 function openReplacement(method, url, async, user, password) {
@@ -14,11 +15,11 @@ function openReplacement(method, url, async, user, password) {
   return open.apply(this, arguments);
 }
 function sendReplacement(data) {
-  if(this.onreadystatechange) {
+  if (this.onreadystatechange) {
     this._onreadystatechange = this.onreadystatechange;
   }
   /**
-   * PLACE HERE YOUR CODE WHEN REQUEST IS SENT  
+   * PLACE HERE YOUR CODE WHEN REQUEST IS SENT
    */
   this.onreadystatechange = onReadyStateChangeReplacement;
   return send.apply(this, arguments);
@@ -27,152 +28,216 @@ function onReadyStateChangeReplacement() {
   /**
    * PLACE HERE YOUR CODE FOR READYSTATECHANGE
    */
-  if(this._onreadystatechange) {
+  if (this._onreadystatechange) {
     return this._onreadystatechange.apply(this, arguments);
   }
 }
 window.XMLHttpRequest.prototype.open = openReplacement;
 window.XMLHttpRequest.prototype.send = sendReplacement;
-// document.querySelector('#executescript').addEventListener('click', function() {
-//     sendObjectToInspectedPage({action: "code", content: "console.log('Inline script executed')"});
-// }, false);
 
-document.querySelector('#searchBox').addEventListener('input', function(event) {
+document.querySelector("#copyJson").addEventListener(
+  "click",
+  function () {
+    copyJson();
+  },
+  false
+);
+
+document.querySelector("#searchBox").addEventListener(
+  "input",
+  function (event) {
     filterText = event.target.value;
     drawRequests();
-}, false);
+  },
+  false
+);
 
-document.querySelector('#requesttab').addEventListener('click', function(event) {
-    openPanel(event, 'Request');
-}, false);
-document.querySelector('#responsetab').addEventListener('click', function(event) {
-    openPanel(event, 'Response');
-}, false);
+document.querySelector("#requesttab").addEventListener(
+  "click",
+  function (event) {
+    openPanel(event, "Request");
+  },
+  false
+);
+document.querySelector("#responsetab").addEventListener(
+  "click",
+  function (event) {
+    openPanel(event, "Response");
+  },
+  false
+);
 function openPanel(evt, panelName) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    document.getElementById(panelName).style.display = "block";
-    evt.currentTarget.className += " active";
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
   }
-document.addEventListener('DOMContentLoaded', function () {
-    // Query the element
-    const resizer = document.getElementById('dragMe');
-    const leftSide = resizer.previousElementSibling;
-    const rightSide = resizer.nextElementSibling;
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  whatToCopy = panelName;
+  document.getElementById(panelName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+document.addEventListener("DOMContentLoaded", function () {
+  // Query the element
+  const resizer = document.getElementById("dragMe");
+  const leftSide = resizer.previousElementSibling;
+  const rightSide = resizer.nextElementSibling;
 
-    // The current position of mouse
-    let x = 0;
-    let y = 0;
-    let leftWidth = 0;
+  // The current position of mouse
+  let x = 0;
+  let y = 0;
+  let leftWidth = 0;
 
-    // Handle the mousedown event
-    // that's triggered when user drags the resizer
-    const mouseDownHandler = function (e) {
-        // Get the current mouse position
-        x = e.clientX;
-        y = e.clientY;
-        leftWidth = leftSide.getBoundingClientRect().width;
+  // Handle the mousedown event
+  // that's triggered when user drags the resizer
+  const mouseDownHandler = function (e) {
+    // Get the current mouse position
+    x = e.clientX;
+    y = e.clientY;
+    leftWidth = leftSide.getBoundingClientRect().width;
 
-        // Attach the listeners to `document`
-        document.addEventListener('mousemove', mouseMoveHandler);
-        document.addEventListener('mouseup', mouseUpHandler);
-    };
+    // Attach the listeners to `document`
+    document.addEventListener("mousemove", mouseMoveHandler);
+    document.addEventListener("mouseup", mouseUpHandler);
+  };
 
-    const mouseMoveHandler = function (e) {
-        // How far the mouse has been moved
-        const dx = e.clientX - x;
-        const dy = e.clientY - y;
+  const mouseMoveHandler = function (e) {
+    // How far the mouse has been moved
+    const dx = e.clientX - x;
+    const dy = e.clientY - y;
 
-        const newLeftWidth = ((leftWidth + dx) * 100) / resizer.parentNode.getBoundingClientRect().width;
-        leftSide.style.width = `${newLeftWidth}%`;
+    const newLeftWidth =
+      ((leftWidth + dx) * 100) /
+      resizer.parentNode.getBoundingClientRect().width;
+    leftSide.style.width = `${newLeftWidth}%`;
 
-        resizer.style.cursor = 'col-resize';
-        document.body.style.cursor = 'col-resize';
+    resizer.style.cursor = "col-resize";
+    document.body.style.cursor = "col-resize";
 
-        leftSide.style.userSelect = 'none';
-        leftSide.style.pointerEvents = 'none';
+    leftSide.style.userSelect = "none";
+    leftSide.style.pointerEvents = "none";
 
-        rightSide.style.userSelect = 'none';
-        rightSide.style.pointerEvents = 'none';
-    };
+    rightSide.style.userSelect = "none";
+    rightSide.style.pointerEvents = "none";
+  };
 
-    const mouseUpHandler = function () {
-        resizer.style.removeProperty('cursor');
-        document.body.style.removeProperty('cursor');
+  const mouseUpHandler = function () {
+    resizer.style.removeProperty("cursor");
+    document.body.style.removeProperty("cursor");
 
-        leftSide.style.removeProperty('user-select');
-        leftSide.style.removeProperty('pointer-events');
+    leftSide.style.removeProperty("user-select");
+    leftSide.style.removeProperty("pointer-events");
 
-        rightSide.style.removeProperty('user-select');
-        rightSide.style.removeProperty('pointer-events');
+    rightSide.style.removeProperty("user-select");
+    rightSide.style.removeProperty("pointer-events");
 
-        // Remove the handlers of `mousemove` and `mouseup`
-        document.removeEventListener('mousemove', mouseMoveHandler);
-        document.removeEventListener('mouseup', mouseUpHandler);
-    };
+    // Remove the handlers of `mousemove` and `mouseup`
+    document.removeEventListener("mousemove", mouseMoveHandler);
+    document.removeEventListener("mouseup", mouseUpHandler);
+  };
 
-    // Attach the handler
-    resizer.addEventListener('mousedown', mouseDownHandler);
+  // Attach the handler
+  resizer.addEventListener("mousedown", mouseDownHandler);
 });
 
-chrome.devtools.network.onRequestFinished.addListener(request => {
-    request.getContent((body) => {
-      if (request.request && request.request.url && request._resourceType==='xhr') {
-            cnt++;
-            arr.push({
-                id: cnt, url:request.request.url.substring(request.request.url.lastIndexOf('/') + 1), 
-                request: JSON.stringify(request.request), 
-                response: body?.replaceAll('\\','').replace(/(^"|"$)/g, '').replaceAll('"{','{').replaceAll('}"','}')
-            });
-            drawRequests();            
-     }
-    });
+chrome.devtools.network.onRequestFinished.addListener((request) => {
+  request.getContent((body) => {
+    if (
+      request.request &&
+      request.request.url &&
+      request._resourceType === "xhr"
+    ) {
+      cnt++;
+      arr.push({
+        id: cnt,
+        url: request.request.url.substring(
+          request.request.url.lastIndexOf("/") + 1
+        ),
+        request: JSON.stringify(request.request),
+        response: body
+          ?.replaceAll("\\", "")
+          .replace(/(^"|"$)/g, "")
+          .replaceAll('"{', "{")
+          .replaceAll('}"', "}"),
+      });
+      drawRequests();
+    }
   });
+});
 
-  function drawRequests(){
-    document.getElementById("requestList").innerHTML='';
-    arr.filter(x=>!filterText || filterText && x.url.toLowerCase().indexOf(filterText.toLowerCase())!==-1).forEach(item=>{
+function drawRequests() {
+  document.getElementById("requestList").innerHTML = "";
+  arr
+    .filter(
+      (x) =>
+        !filterText ||
+        (filterText &&
+          x.url.toLowerCase().indexOf(filterText.toLowerCase()) !== -1)
+    )
+    .forEach((item) => {
       var node = document.createElement("LI");
       node.setAttribute("id", item.id);
       node.setAttribute("class", "request-item");
-      node.addEventListener('click', function(event) {
-
-          [...document.getElementById("requestList").children].forEach(element => {
-              element.setAttribute('class','request-item');
-          });
-
-          document.getElementById(event.target.id).setAttribute('class','request-item selected-item');
-          var respData = arr.find(x=>x.id.toString()===event.target.id).response;
-          var reqData = arr.find(x=>x.id.toString()===event.target.id).request;
+      node.addEventListener(
+        "click",
+        function (event) {
+          [...document.getElementById("requestList").children].forEach(
+            (element) => {
+              element.setAttribute("class", "request-item");
+            }
+          );
+          copyId = event.target.id;
+          document
+            .getElementById(event.target.id)
+            .setAttribute("class", "request-item selected-item");
+          var respData = arr.find(
+            (x) => x.id.toString() === event.target.id
+          ).response;
+          var reqData = arr.find(
+            (x) => x.id.toString() === event.target.id
+          ).request;
           responseElem = document.getElementById("Response");
-          responseElem.innerHTML = '';
+          responseElem.innerHTML = "";
           requestElem = document.getElementById("Request");
-          requestElem.innerHTML = '';
+          requestElem.innerHTML = "";
           try {
-          if(respData){
+            if (respData) {
               var json = JSON.parse(respData);
-          }
-          responseElem.appendChild(renderjson(json));
-          if(reqData) {
+            }
+            responseElem.appendChild(renderjson(json));
+            if (reqData) {
               json = JSON.parse(reqData);
+            }
+            requestElem.appendChild(renderjson(json));
+          } catch {
+            var textnode = document.createTextNode(
+              arr.find((x) => x.id.toString() === event.target.id).response
+            );
+            responseElem.appendChild(textnode);
           }
-          requestElem.appendChild(renderjson(json));
-      } catch {
-          var textnode = document.createTextNode(arr.find(x=>x.id.toString()===event.target.id).response);
-          responseElem.appendChild(textnode);
-      }
-      }, false);
+        },
+        false
+      );
       var textnode = document.createTextNode(item.url);
       node.appendChild(textnode);
       document.getElementById("requestList").appendChild(node);
-    })
+    });
+}
+
+function copyJson() {
+  copyText = "";
+  if (whatToCopy == "Request") {
+    copyText = arr.find((x) => x.id.toString() === copyId)?.request;
+  }
+  if (whatToCopy == "Response") {
+    copyText = arr.find((x) => x.id.toString() === copyId)?.response;
+  }
+  if (copyText) {
+    navigator.clipboard.writeText(copyText);
+  }
 }
 
 //   var data = JSON.parse(textnode);
