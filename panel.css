@@ -152,3 +152,7 @@
     flex-direction: column;
     float: right;
 }
+
+body {
+  overflow: hidden;
+}
