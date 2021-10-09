@@ -3,15 +3,37 @@
 // Can use
 // chrome.devtools.*
 // chrome.extension.*
-
+var cnt=0;
+let arr = new Array();
+var filterText = '';
 // document.querySelector('#executescript').addEventListener('click', function() {
 //     sendObjectToInspectedPage({action: "code", content: "console.log('Inline script executed')"});
 // }, false);
 
-// document.querySelector('#insertscript').addEventListener('click', function() {
-//     sendObjectToInspectedPage({action: "script", content: "inserted-script.js"});
-// }, false);
+document.querySelector('#searchBox').addEventListener('input', function(event) {
+    filterText = event.target.value;
+    drawRequests();
+}, false);
 
+document.querySelector('#requesttab').addEventListener('click', function(event) {
+    openPanel(event, 'Request');
+}, false);
+document.querySelector('#responsetab').addEventListener('click', function(event) {
+    openPanel(event, 'Response');
+}, false);
+function openPanel(evt, panelName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(panelName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
 document.addEventListener('DOMContentLoaded', function () {
     // Query the element
     const resizer = document.getElementById('dragMe');
@@ -72,34 +94,57 @@ document.addEventListener('DOMContentLoaded', function () {
     // Attach the handler
     resizer.addEventListener('mousedown', mouseDownHandler);
 });
-var cnt=0;
-let arr = new Array();
+
 chrome.devtools.network.onRequestFinished.addListener(request => {
     request.getContent((body) => {
       if (request.request && request.request.url) {
         if (request.request.url.includes('localhost:44360')) {
             cnt++;
-            var node = document.createElement("LI");
-            node.setAttribute("id", cnt);
-            node.setAttribute("class", "request-item");
-            node.addEventListener('click', function(event) {
-                var data = arr.find(x=>x.id.toString()===event.target.id).value;
-                if(data){
-                    var json = JSON.parse(data);
-                }
-                var textnode = document.createTextNode(arr.find(x=>x.id.toString()===event.target.id).value);
-                document.getElementById("results").innerHTML = '';
-                document.getElementById("results").appendChild(renderjson(json));
-            }, false)
-            arr.push({id: cnt, value: body?.replaceAll('\\','').replace(/(^"|"$)/g, '')});
-            var textnode = document.createTextNode(request.request.url.replaceAll('https://localhost:44360',''));
-            node.appendChild(textnode);
-            document.getElementById("requestList").appendChild(node);
+            arr.push({id: cnt, url:request.request.url.replaceAll('https://localhost:44360',''), request: JSON.stringify(request.request), response: body?.replaceAll('\\','').replace(/(^"|"$)/g, '')});
+            drawRequests();            
         }
       }
     });
   });
 
+  function drawRequests(){
+    document.getElementById("requestList").innerHTML='';
+    arr.filter(x=>!filterText || filterText && x.url.toLowerCase().indexOf(filterText.toLowerCase())!==-1).forEach(item=>{
+      var node = document.createElement("LI");
+      node.setAttribute("id", item.id);
+      node.setAttribute("class", "request-item");
+      node.addEventListener('click', function(event) {
+
+          [...document.getElementById("requestList").children].forEach(element => {
+              element.setAttribute('class','request-item');
+          });
+
+          document.getElementById(event.target.id).setAttribute('class','request-item selected-item');
+          var respData = arr.find(x=>x.id.toString()===event.target.id).response;
+          var reqData = arr.find(x=>x.id.toString()===event.target.id).request;
+          responseElem = document.getElementById("Response");
+          responseElem.innerHTML = '';
+          requestElem = document.getElementById("Request");
+          requestElem.innerHTML = '';
+          try {
+          if(respData){
+              var json = JSON.parse(respData);
+          }
+          responseElem.appendChild(renderjson(json));
+          if(reqData) {
+              json = JSON.parse(reqData);
+          }
+          requestElem.appendChild(renderjson(json));
+      } catch {
+          var textnode = document.createTextNode(arr.find(x=>x.id.toString()===event.target.id).response);
+          responseElem.appendChild(textnode);
+      }
+      }, false);
+      var textnode = document.createTextNode(item.url);
+      node.appendChild(textnode);
+      document.getElementById("requestList").appendChild(node);
+    })
+}
 
 //   var data = JSON.parse(textnode);
 //   document.getElementById("results").appendChild(renderjson(data));

@@ -1,7 +1,7 @@
 {
-    "name": "DevToolsPanel",
+    "name": "Bog Json Parser",
     "version": "0.1",
-    "description": "A bare-bones example of communication between devtools and an inspected page",
+    "description": "Bog ugly json reponse parser",
     "devtools_page": "devtools.html",
     "background": {
         "scripts": [
