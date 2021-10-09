@@ -1,0 +1,116 @@
+.results {
+  width: 49.8%;
+  height: 96vh;
+  overflow: auto;
+  left: 50%;
+  float: right;
+  position: absolute;
+  border: 1px solid blue;
+}
+
+.request-item {
+  cursor: pointer;
+  white-space: nowrap;
+}
+/* 
+#parent{
+    display: flex;
+    border: 1px solid #000;
+    height: 75vh;
+    width: 100%;
+  }
+  #LeftCol{
+    flex-grow: 1;
+    border: 1px solid red;
+    
+    resize: horizontal;
+    overflow: auto;
+  }
+  #RightCol{
+    flex-grow: 3;
+    border: 1px solid red;
+  } */
+.container {
+  display: flex;
+
+  /* Misc */
+  border: 1px solid #cbd5e0;
+  height: 98vh;
+  width: 100%;
+}
+.container__left {
+  /* Initially, the left takes 3/4 width */
+  width: 25%;
+  overflow: auto;
+  /* Misc */
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+.resizer {
+  background-color: #cbd5e0;
+  cursor: ew-resize;
+  height: 100%;
+  width: 5px;
+}
+.container__right {
+  /* Take the remaining width */
+  flex: 1;
+  overflow: auto;
+  /* Misc */
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.ul-class {
+  top: 0;
+  width: 100%;
+  height: 97%;
+}
+
+.renderjson {
+  width: 100%;
+  height: 96%;
+  font-size: large;
+}
+.renderjson a {
+  text-decoration: none;
+}
+
+.renderjson .disclosure {
+  color: crimson;
+  font-size: 150%;
+}
+
+.renderjson .syntax {
+  color: grey;
+}
+
+.renderjson .string {
+  color: red;
+}
+
+.renderjson .number {
+  color: blue(0, 255, 76);
+}
+
+.renderjson .boolean {
+  color: blue;
+}
+
+.renderjson .key {
+  color: rgb(88, 137, 153);
+}
+
+.renderjson .keyword {
+  color: rgb(179, 25, 226);
+}
+
+.renderjson .object.syntax {
+  color: lightseagreen;
+}
+
+.renderjson .array.syntax {
+  color: lightsalmon;
+}
