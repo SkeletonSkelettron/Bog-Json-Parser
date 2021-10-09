@@ -145,3 +145,10 @@
   height: 100%;
   overflow: auto;
 }
+
+
+.about {
+  display: flex;
+    flex-direction: column;
+    float: right;
+}

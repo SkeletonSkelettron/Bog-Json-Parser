@@ -100,7 +100,7 @@ chrome.devtools.network.onRequestFinished.addListener(request => {
       if (request.request && request.request.url) {
         if (request.request.url.includes('localhost:44360')) {
             cnt++;
-            arr.push({id: cnt, url:request.request.url.replaceAll('https://localhost:44360',''), request: JSON.stringify(request.request), response: body?.replaceAll('\\','').replace(/(^"|"$)/g, '')});
+            arr.push({id: cnt, url:request.request.url.substring(request.request.url.lastIndexOf('/') + 1), request: JSON.stringify(request.request), response: body?.replaceAll('\\','').replace(/(^"|"$)/g, '')});
             drawRequests();            
         }
       }
