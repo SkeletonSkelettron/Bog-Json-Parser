@@ -6,6 +6,33 @@
 var cnt=0;
 let arr = new Array();
 var filterText = '';
+
+var open = window.XMLHttpRequest.prototype.open,
+  send = window.XMLHttpRequest.prototype.send;
+function openReplacement(method, url, async, user, password) {
+  this._url = url;
+  return open.apply(this, arguments);
+}
+function sendReplacement(data) {
+  if(this.onreadystatechange) {
+    this._onreadystatechange = this.onreadystatechange;
+  }
+  /**
+   * PLACE HERE YOUR CODE WHEN REQUEST IS SENT  
+   */
+  this.onreadystatechange = onReadyStateChangeReplacement;
+  return send.apply(this, arguments);
+}
+function onReadyStateChangeReplacement() {
+  /**
+   * PLACE HERE YOUR CODE FOR READYSTATECHANGE
+   */
+  if(this._onreadystatechange) {
+    return this._onreadystatechange.apply(this, arguments);
+  }
+}
+window.XMLHttpRequest.prototype.open = openReplacement;
+window.XMLHttpRequest.prototype.send = sendReplacement;
 // document.querySelector('#executescript').addEventListener('click', function() {
 //     sendObjectToInspectedPage({action: "code", content: "console.log('Inline script executed')"});
 // }, false);
@@ -97,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 chrome.devtools.network.onRequestFinished.addListener(request => {
     request.getContent((body) => {
-      if (request.request && request.request.url) {
+      if (request.request && request.request.url && request._resourceType==='xhr') {
             cnt++;
             arr.push({
                 id: cnt, url:request.request.url.substring(request.request.url.lastIndexOf('/') + 1), 
