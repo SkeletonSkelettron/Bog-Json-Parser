@@ -98,12 +98,10 @@ document.addEventListener('DOMContentLoaded', function () {
 chrome.devtools.network.onRequestFinished.addListener(request => {
     request.getContent((body) => {
       if (request.request && request.request.url) {
-        if (request.request.url.includes('localhost:44360')) {
             cnt++;
             arr.push({id: cnt, url:request.request.url.substring(request.request.url.lastIndexOf('/') + 1), request: JSON.stringify(request.request), response: body?.replaceAll('\\','').replace(/(^"|"$)/g, '')});
             drawRequests();            
-        }
-      }
+     }
     });
   });
 
