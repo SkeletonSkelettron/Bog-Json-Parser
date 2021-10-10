@@ -1,18 +1,21 @@
 {
     "name": "Bog Json Parser",
     "version": "0.1",
-    "description": "Bog ugly json reponse beautifier",
+    "description": "Ugly json reponse beautifier",
     "devtools_page": "devtools.html",
     "background": {
         "scripts": [
             "background.js"
         ]
     },
-    "permissions": [
-        "tabs", 
-        "clipboard",
-        "http://*/*",
-        "https://*/*"
-    ],
+    "browser_action": {
+        "default_icon": "json-file.png",
+        "default_title": "Ugly json response beautifier"
+     },
+    "icons": {
+        "128": "json128.png",
+        "16": "json16.png",
+        "48": "json48.png"
+     },
     "manifest_version": 2
 }
