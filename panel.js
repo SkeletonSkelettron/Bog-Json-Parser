@@ -35,6 +35,13 @@ function onReadyStateChangeReplacement() {
 window.XMLHttpRequest.prototype.open = openReplacement;
 window.XMLHttpRequest.prototype.send = sendReplacement;
 
+document.querySelector("#clearAll").addEventListener(
+  "click",
+  function () {
+    clearAll();
+  },
+  false
+);
 document.querySelector("#copyJson").addEventListener(
   "click",
   function () {
@@ -193,12 +200,8 @@ function drawRequests() {
           document
             .getElementById(event.target.id)
             .setAttribute("class", "request-item selected-item");
-          var respData = arr.find(
-            (x) => x.id.toString() === event.target.id
-          ).response;
-          var reqData = arr.find(
-            (x) => x.id.toString() === event.target.id
-          ).request;
+          var respData = arr.find((x) => x.id.toString() === event.target.id).response;
+          var reqData = arr.find((x) => x.id.toString() === event.target.id).request;
           responseElem = document.getElementById("Response");
           responseElem.innerHTML = "";
           requestElem = document.getElementById("Request");
@@ -261,6 +264,16 @@ function copyJson() {
     document.body.removeChild(textArea);
   }
 }
+
+function clearAll() {
+  arr = new Array();
+  cnt = 0;
+  filterText = "";
+  document.getElementById("requestList").innerHTML = "";
+  document.getElementById("Request").innerHTML = "";
+  document.getElementById("Response").innerHTML = "";
+}
+
 
 //   var data = JSON.parse(textnode);
 //   document.getElementById("results").appendChild(renderjson(data));
