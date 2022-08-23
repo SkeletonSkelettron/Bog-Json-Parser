@@ -43,6 +43,13 @@ document.querySelector("#clearAll").addEventListener(
   false
 );
 
+document.querySelector("#clearAll").addEventListener(
+  "click",
+  function () {
+    clearAll();
+  },
+  false
+);
 document.querySelector("#copyJson").addEventListener(
   "click",
   function () {
@@ -193,12 +200,8 @@ function drawRequests() {
           document
             .getElementById(event.target.id)
             .setAttribute("class", "request-item selected-item");
-          var respData = arr.find(
-            (x) => x.id.toString() === event.target.id
-          ).response;
-          var reqData = arr.find(
-            (x) => x.id.toString() === event.target.id
-          ).request;
+          var respData = arr.find((x) => x.id.toString() === event.target.id).response;
+          var reqData = arr.find((x) => x.id.toString() === event.target.id).request;
           responseElem = document.getElementById("Response");
           responseElem.innerHTML = "";
           requestElem = document.getElementById("Request");
