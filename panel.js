@@ -1,11 +1,7 @@
 // This one acts in the context of the panel in the Dev Tools
-
 //
-
 // Can use
-
 // chrome.devtools.*
-
 // chrome.extension.*
 
 var cnt = 0;
@@ -27,6 +23,7 @@ function sendReplacement(data) {
   this.onreadystatechange = onReadyStateChangeReplacement;
   return send.apply(this, arguments);
 }
+
 function onReadyStateChangeReplacement() {
   if (this._onreadystatechange) {
     return this._onreadystatechange.apply(this, arguments);
@@ -50,6 +47,7 @@ document.querySelector("#clearAll").addEventListener(
   },
   false
 );
+
 document.querySelector("#copyJson").addEventListener(
   "click",
   function () {
@@ -57,6 +55,7 @@ document.querySelector("#copyJson").addEventListener(
   },
   false
 );
+
 document.querySelector("#searchBox").addEventListener(
   "input",
   function (event) {
@@ -133,6 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
     rightSide.style.userSelect = "none";
     rightSide.style.pointerEvents = "none";
   };
+
   const mouseUpHandler = function () {
     resizer.style.removeProperty("cursor");
     document.body.style.removeProperty("cursor");
@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.removeEventListener("mousemove", mouseMoveHandler);
     document.removeEventListener("mouseup", mouseUpHandler);
   };
-    resizer.addEventListener("mousedown", mouseDownHandler);
+  resizer.addEventListener("mousedown", mouseDownHandler);
 });
 
 chrome.devtools.network.onRequestFinished.addListener((request) => {
@@ -200,39 +200,43 @@ function drawRequests() {
           document
             .getElementById(event.target.id)
             .setAttribute("class", "request-item selected-item");
-          var respData = arr.find((x) => x.id.toString() === event.target.id).response;
-          var reqData = arr.find((x) => x.id.toString() === event.target.id).request;
+          var respData = arr.find(
+            (x) => x.id.toString() === event.target.id
+          ).response;
+          var reqData = arr.find(
+            (x) => x.id.toString() === event.target.id
+          ).request;
           responseElem = document.getElementById("Response");
           responseElem.innerHTML = "";
           requestElem = document.getElementById("Request");
           requestElem.innerHTML = "";
           try {
             if (respData) {
-              //respDataJSON.parse(respData);
-              var respJson = Object.keys(respData).reduce(
-                (accumulated, key) => {
-                  try {
-                    accumulated[key] = JSON.parse(respData[key] || "{}");
-                  } catch (e) {
-                    accumulated[key] = respData[key];
-                  }
-                  return accumulated;
-                },
-                {}
-              );
+              var respJson = createJson(respData);
               responseElem.appendChild(renderjson(respJson));
             }
             if (reqData) {
-              if (reqData.postData && reqData.postData.text) {
-                reqData.postData.text = JSON.parse(reqData.postData.text);
-              }
-              requestElem.appendChild(renderjson(reqData));
+              var reqJson = createJson(reqData);
+              try {
+                if (reqJson.postData && reqJson.postData.text) {
+                  reqJson.postData.text = JSON.parse(reqJson.postData.text);
+                }
+              } catch {}
+              requestElem.appendChild(renderjson(reqJson));
             }
-          } catch {
-            var textnode = document.createTextNode(
-              arr.find((x) => x.id.toString() === event.target.id).response
-            );
-            responseElem.appendChild(textnode);
+          } catch (exception) {
+            if (respData) {
+              var textnode = document.createTextNode(
+                arr.find((x) => x.id.toString() === event.target.id).response
+              );
+              responseElem.appendChild(textnode);
+            }
+            if (reqData) {
+              var textnode = document.createTextNode(
+                arr.find((x) => x.id.toString() === event.target.id).request
+              );
+              requestElem.appendChild(renderjson(textnode));
+            }
           }
         },
         false
@@ -241,6 +245,17 @@ function drawRequests() {
       node.appendChild(textnode);
       document.getElementById("requestList").appendChild(node);
     });
+}
+
+function createJson(data) {
+  return Object.keys(data).reduce((accumulated, key) => {
+    try {
+      accumulated[key] = JSON.parse(data[key] || "{}");
+    } catch (e) {
+      accumulated[key] = data[key];
+    }
+    return accumulated;
+  }, {});
 }
 
 function copyJson() {
