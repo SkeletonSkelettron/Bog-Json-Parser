@@ -68,6 +68,7 @@ document.querySelector("#searchBox").addEventListener(
 document.querySelector("#requesttab").addEventListener(
   "click",
   function (event) {
+    clearHighlight();
     openPanel(event, "Request");
   },
   false
@@ -76,7 +77,24 @@ document.querySelector("#requesttab").addEventListener(
 document.querySelector("#responsetab").addEventListener(
   "click",
   function (event) {
+    clearHighlight();
     openPanel(event, "Response");
+  },
+  false
+);
+
+document.querySelector("#find").addEventListener(
+  "click",
+  function (event) {
+    toggleSearchBox(event);
+  },
+  false
+);
+
+document.querySelector("#searchBoxInhtml").addEventListener(
+  "input",
+  function (event) {
+    highlightText(event.target.value);
   },
   false
 );
@@ -97,28 +115,21 @@ function openPanel(evt, panelName) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Query the element
   const resizer = document.getElementById("dragMe");
   const leftSide = resizer.previousElementSibling;
   const rightSide = resizer.nextElementSibling;
-  // The current position of mouse
   let x = 0;
   let y = 0;
-  let leftWidth = 0;
-  // Handle the mousedown event
-  // that's triggered when user drags the resizer
-  const mouseDownHandler = function (e) {
-    // Get the current mouse position
+  let leftWidth = 0; 
+  const mouseDownHandler = function (e) { 
     x = e.clientX;
     y = e.clientY;
-    leftWidth = leftSide.getBoundingClientRect().width;
-    // Attach the listeners to `document`
+    leftWidth = leftSide.getBoundingClientRect().width; 
     document.addEventListener("mousemove", mouseMoveHandler);
     document.addEventListener("mouseup", mouseUpHandler);
   };
 
-  const mouseMoveHandler = function (e) {
-    // How far the mouse has been moved
+  const mouseMoveHandler = function (e) { 
     const dx = e.clientX - x;
     const dy = e.clientY - y;
     const newLeftWidth =
@@ -300,4 +311,65 @@ function clearAll() {
   document.getElementById("requestList").innerHTML = "";
   document.getElementById("Request").innerHTML = "";
   document.getElementById("Response").innerHTML = "";
+}
+
+function toggleSearchBox() {
+  const searchBox = document.getElementById('searchBoxInhtml');
+  if (searchBox.style.display === 'none') {
+    searchBox.style.display = 'block';
+  } else {
+    searchBox.style.display = 'none';
+    removeHighlights();
+  }
+}
+
+
+function highlightText(searchText) {     
+  if (!searchText){
+    clearHighlight();
+    return;
+  } 
+
+  const context = document.getElementById(whatToCopy);
+  const overlay = document.getElementById('highlight-overlay');
+
+  overlay.innerHTML = '';
+
+  getTextNodes(context).forEach((node) => {
+    const regex = new RegExp(searchText, 'gi');
+    const match = regex.exec(node.nodeValue);
+    
+    if (match) {
+      const range = document.createRange();
+      range.setStart(node, match.index);
+      range.setEnd(node, match.index + match[0].length);
+      const rect = range.getBoundingClientRect();
+
+      const highlightDiv = document.createElement('div');
+      highlightDiv.className = 'highlight';
+      highlightDiv.style.width = `${rect.width}px`;
+      highlightDiv.style.height = `${rect.height}px`;
+      highlightDiv.style.top = `${rect.top + window.scrollY}px`;
+      highlightDiv.style.left = `${rect.left + window.scrollX}px`;
+
+      overlay.appendChild(highlightDiv);
+    }
+  });
+}
+
+function clearHighlight() {
+  document.getElementById('highlight-overlay').innerHTML = '';
+}
+
+function getTextNodes(node) {
+  const textNodes = [];
+  function traverseNodes(currentNode) {
+    if (currentNode.nodeType === Node.TEXT_NODE) {
+      textNodes.push(currentNode);
+    } else {
+      currentNode.childNodes.forEach(traverseNodes);
+    }
+  }
+  traverseNodes(node);
+  return textNodes;
 }

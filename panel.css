@@ -226,4 +226,19 @@ body {
   cursor: pointer;
 
   margin: 10px;
+} 
+
+#highlight-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none; /* Make sure the overlay doesn't block clicks */
+  z-index: 10; /* Place it above the content */
+}
+
+.highlight {
+  position: absolute;
+  background-color: yellow; /* Highlight color */
+  opacity: 0.5;
+  pointer-events: none;
 }

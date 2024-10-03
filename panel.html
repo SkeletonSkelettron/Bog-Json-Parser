@@ -7,39 +7,55 @@
     <div class="container">
       <div class="container__left">
         <div class="subcontainer">
-          <input id="searchBox" type="text" />
+          <input
+            id="searchBox"
+            type="text"
+          />
 
-          <ul id="requestList" class="ul-class"></ul>
+          <ul
+            id="requestList"
+            class="ul-class"
+          ></ul>
         </div>
       </div>
-      <div class="resizer" id="dragMe"></div>
+      <div
+        class="resizer"
+        id="dragMe"
+      ></div>
+      <div id="highlight-overlay"></div>
       <div class="container__right">
         <div class="subcontainer">
           <div class="tab">
-            <button id="requesttab" class="tablinks">Request</button>
-            <button id="responsetab" class="tablinks active">Response</button>
+            <button
+              id="requesttab"
+              class="tablinks"
+            >
+              Request
+            </button>
+            <button
+              id="responsetab"
+              class="tablinks active"
+            >
+              Response
+            </button>
             <svg
               class="copy"
               id="clearAll"
               version="1.1"
               id="Layer_1"
               xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              viewBox="0 0 473 473"
-              style="enable-background: new 0 0 473 473"
-              xml:space="preserve"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-trash"
+              viewBox="0 0 16 16"
             >
-              <g>
-                <path
-                  d="M324.285,215.015V128h20V38h-98.384V0H132.669v38H34.285v90h20v305h161.523c23.578,24.635,56.766,40,93.477,40   c71.368,0,129.43-58.062,129.43-129.43C438.715,277.276,388.612,222.474,324.285,215.015z M294.285,215.015   c-18.052,2.093-34.982,7.911-50,16.669V128h50V215.015z M162.669,30h53.232v8h-53.232V30z M64.285,68h250v30h-250V68z M84.285,128   h50v275h-50V128z M164.285,403V128h50v127.768c-21.356,23.089-34.429,53.946-34.429,87.802c0,21.411,5.231,41.622,14.475,59.43   H164.285z M309.285,443c-54.826,0-99.429-44.604-99.429-99.43s44.604-99.429,99.429-99.429s99.43,44.604,99.43,99.429   S364.111,443,309.285,443z"
-                ></path>
-
-                <polygon
-                  points="342.248,289.395 309.285,322.358 276.323,289.395 255.11,310.608 288.073,343.571 255.11,376.533 276.323,397.746    309.285,364.783 342.248,397.746 363.461,376.533 330.498,343.571 363.461,310.608  "
-                ></polygon>
-              </g>
+              <path
+                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"
+              />
+              <path
+                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"
+              />
             </svg>
             <svg
               class="copy"
@@ -47,19 +63,31 @@
               aria-hidden="true"
               tooltip
               focusable="false"
-              data-prefix="far"
-              data-icon="copy"
-              role="img"
               xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 448 512"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-copy"
+              viewBox="0 0 16 16"
             >
-              <rect>
-                <title>Copy json</title>
-              </rect>
-
               <path
-                d="M433.941 65.941l-51.882-51.882A48 48 0 0 0 348.118 0H176c-26.51 0-48 21.49-48 48v48H48c-26.51 0-48 21.49-48 48v320c0 26.51 21.49 48 48 48h224c26.51 0 48-21.49 48-48v-48h80c26.51 0 48-21.49 48-48V99.882a48 48 0 0 0-14.059-33.941zM266 464H54a6 6 0 0 1-6-6V150a6 6 0 0 1 6-6h74v224c0 26.51 21.49 48 48 48h96v42a6 6 0 0 1-6 6zm128-96H182a6 6 0 0 1-6-6V54a6 6 0 0 1 6-6h106v88c0 13.255 10.745 24 24 24h88v202a6 6 0 0 1-6 6zm6-256h-64V48h9.632c1.591 0 3.117.632 4.243 1.757l48.368 48.368a6 6 0 0 1 1.757 4.243V112z"
-              ></path>
+                fill-rule="evenodd"
+                d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"
+              />
+            </svg>
+            <svg
+              class="copy"
+              id="find"
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-search"
+              viewBox="0 0 16 16" 
+            >
+              <path
+                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"
+              />
             </svg>
             <div class="about">
               <label style="float: right; margin-top: 3px; margin-right: 5px">
@@ -74,13 +102,30 @@
               </div>
             </div>
           </div>
-          <div id="Request" class="tabcontent"></div>
-          <div id="Response" style="display: block" class="tabcontent"></div>
+          <input
+            id="searchBoxInhtml"
+            style="display: none"
+            type="text"
+          />
+          <div
+            id="Request"
+            class="tabcontent"
+          ></div>
+          <div
+            id="Response"
+            style="display: block"
+            class="tabcontent"
+          ></div>
         </div>
       </div>
     </div>
+    <script src="mark.js"></script>
     <script src="renderjson.js"></script>
     <script src="panel.js"></script>
-    <link rel="stylesheet" href="panel.css" />
+    <link
+      rel="stylesheet"
+      href="panel.css"
+    />
+    
   </body>
 </html>
