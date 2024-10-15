@@ -1,6 +1,6 @@
 {
     "name": "Bog Json Parser",
-    "version": "0.2",
+    "version": "0.3",
     "description": "Json reponse beautifier",
     "devtools_page": "devtools.html",
     "background": {
